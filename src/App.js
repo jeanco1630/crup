@@ -1,6 +1,6 @@
-import { isEmpty, map, size} from 'lodash'
-import React, {useState} from 'react'
-import shortid from 'shortid'
+import { isEmpty,  size} from 'lodash'
+import React, {useState, useEffect} from 'react'
+import { addDocument, getColllection } from './actions'
 
 function App() {
   const [task, setTask] = useState('')
@@ -8,6 +8,16 @@ function App() {
   const [editMode, setEditMode] = useState(false)
   const [id, setId] = useState('')
   const [error, setError] = useState(null)
+
+  useEffect(() => {
+   (async ()=> {
+     const result = await getColllection("tasks")
+     if( result.statusResponse){
+       
+       setTasks( result.data)
+     }
+    })()
+  }, [])
 
   const validForm = () =>{
     let isValid = true
@@ -19,18 +29,19 @@ function App() {
     return isValid
   }
 
-  const addTask = (e) => {
+  const addTask = async(e) => {
     e.preventDefault()
     if (!validForm()){
       return
     }
 
-    
-    const newTask ={
-      id  :shortid.generate(),
-      name: task
+    const result = await addDocument("tasks",{name :task})
+    if (!result.statusResponse){
+      setError(result.error)
+      return
+
     }
-    setTasks([...tasks, newTask])
+    setTasks([...tasks, {id: result.data.id, name: task }])
     setTask('')
   }
   const saveTask = (e) => {
