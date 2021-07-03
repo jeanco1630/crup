@@ -39,3 +39,31 @@ export  const getColllection =async (collection) =>{
 
     return result
 }
+// obtener cualcquier documento de la base de datos
+export const getDocument = async(collection, id) => {
+    const result = { statusResponse: false , data: false, error : null}
+    try {
+
+        const response = await db.collection(collection).doc(id).get()
+        result.data = { id: response.id, ...response.data() }
+        result.statusResponse =true
+        
+    } catch (error) {
+        result.error = error 
+        
+    }
+    return result
+}
+export const updateDocument = async(collection, id, data) => {
+    const result = { statusResponse: false ,  error : null}
+    try {
+
+        await db.collection(collection).doc(id).update(data)
+        result.statusResponse = true
+        
+    } catch (error) {
+        result.error = error 
+        
+    }
+    return result
+}
