@@ -54,6 +54,8 @@ export const getDocument = async(collection, id) => {
     }
     return result
 }
+
+//actulizar la base de datos
 export const updateDocument = async(collection, id, data) => {
     const result = { statusResponse: false ,  error : null}
     try {
@@ -65,5 +67,21 @@ export const updateDocument = async(collection, id, data) => {
         result.error = error 
         
     }
+    return result
+}
+
+// delete de la base de datos
+export const deleteDocument = async (collection, id) =>{
+    const result ={statusResponse: false, error : null}
+
+    try {
+        await db.collection(collection).doc(id).delete()
+        result.statusResponse = true
+        
+    } catch (error) {
+        result.error = error
+        
+    }
+
     return result
 }

@@ -1,6 +1,6 @@
 import { isEmpty,  size} from 'lodash'
 import React, {useState, useEffect} from 'react'
-import { addDocument, getColllection, updateDocument } from './actions'
+import { addDocument, deleteDocument, getColllection, updateDocument } from './actions'
 
 function App() {
   const [task, setTask] = useState('')
@@ -61,10 +61,16 @@ function App() {
     const editedTasks = tasks.map(item => item.id === id ? {id, name:task}: item)
     setTasks(editedTasks)
     setEditMode(false)
-    setTask('')
-    setId('')
+    setTask("")
+    setId("")
   }
-    const deleteTask = (id) =>{
+    const deleteTask = async (id) => {
+      const result = await deleteDocument("tasks", id)
+      if (!result.statusResponse){
+        setError(result.error)
+        return
+      }
+
       const filteredTasks = tasks.filter(task => task.id !== id)
       setTasks(filteredTasks)
     }
